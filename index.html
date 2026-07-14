@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字藏品阁 - 南京瑞雨山科技有限公司</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#121212',
+                        panel: '#1E1E1E',
+                        gold: '#D4AF37'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-dark text-gray-300 h-screen flex flex-col font-sans overflow-hidden">
+
+    <header class="h-16 bg-panel border-b border-gray-800 flex items-center justify-between px-6 shrink-0">
+        <div class="flex items-center gap-4">
+            <h1 class="text-xl font-bold text-gold tracking-widest">数字藏品阁</h1>
+            <span class="text-xs text-gray-500 border-l border-gray-700 pl-4">南京瑞雨山科技有限公司 旗下</span>
+        </div>
+        <div class="flex items-center">
+            <input type="text" placeholder="搜索红木摆件、茶具..." class="bg-dark border border-gray-700 text-sm rounded-full px-4 py-1.5 focus:outline-none focus:border-gold w-64">
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        
+        <aside class="w-64 bg-panel border-r border-gray-800 flex flex-col shrink-0">
+            <div class="p-4 border-b border-gray-800">
+                <div class="flex gap-2">
+                    <button class="bg-gold text-dark px-3 py-1 rounded text-sm font-bold">红木摆件</button>
+                    <button class="hover:bg-gray-800 text-gray-400 px-3 py-1 rounded text-sm transition">禅意茶具</button>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 space-y-3" id="item-list">
+                </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col relative bg-black">
+            <div class="absolute top-4 left-4 flex gap-2 z-10">
+                <button class="bg-panel border border-gray-700 text-xs px-3 py-1 rounded hover:text-white">纯色背景</button>
+                <button class="bg-panel border border-gray-700 text-xs px-3 py-1 rounded hover:text-white">书桌场景</button>
+                <button class="bg-panel border border-gray-700 text-xs px-3 py-1 rounded hover:text-white">茶几场景</button>
+            </div>
+            
+            <div class="flex-1 flex items-center justify-center flex-col border-2 border-dashed border-gray-800 m-8 rounded-xl">
+                <svg class="w-16 h-16 text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                <p class="text-gray-500">3D 模型渲染区</p>
+                <p class="text-xs text-gray-600 mt-2">支持鼠标拖拽 360° 旋转与滚轮缩放</p>
+                <p class="text-xs text-gold mt-4">（后续在此嵌入 3D 模型代码）</p>
+            </div>
+        </main>
+
+        <aside class="w-80 bg-panel border-l border-gray-800 flex flex-col shrink-0 overflow-y-auto">
+            <div class="p-6 border-b border-gray-800">
+                <h2 id="detail-title" class="text-2xl font-bold text-white mb-2">加载中...</h2>
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="bg-gray-800 text-xs px-2 py-1 rounded">全实木</span>
+                    <span class="bg-gray-800 text-xs px-2 py-1 rounded">手工工艺</span>
+                </div>
+                <p id="detail-desc" class="text-sm text-gray-400 leading-relaxed">
+                    介绍内容...
+                </p>
+            </div>
+
+            <div class="p-6 border-b border-gray-800 flex-1">
+                <h3 class="text-sm font-bold text-gray-300 mb-3">文化渊源</h3>
+                <p class="text-xs text-gray-500 mb-6 leading-relaxed">红木底座源于明清文人雅士的案头陈设，讲究“托物言志”。不仅能防止器物受潮，更能衬托出上方花瓶或紫砂壶的古朴气质。</p>
+                
+                <h3 class="text-sm font-bold text-gray-300 mb-3">实景搭配参考</h3>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-dark h-24 rounded border border-gray-800 flex items-center justify-center text-xs text-gray-600">搭配紫砂壶</div>
+                    <div class="bg-dark h-24 rounded border border-gray-800 flex items-center justify-center text-xs text-gray-600">书房案头</div>
+                </div>
+            </div>
+
+            <div class="p-6 bg-dark">
+                <button class="w-full bg-gold hover:bg-yellow-600 text-dark font-bold py-3 rounded mb-3 transition shadow-lg flex justify-center items-center gap-2">
+                    <span>添加主理人微信 (看更多孤品)</span>
+                </button>
+                <button class="w-full border border-gray-600 hover:border-gray-400 text-gray-300 font-bold py-2 rounded transition flex justify-center items-center gap-2 text-sm">
+                    <span>进入专属社群</span>
+                </button>
+                <p class="text-center text-xs text-gray-600 mt-4">内部专属展厅，扫码进群享私域排单</p>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        const products = [
+            { id: 1, name: "01 镂空精雕圆形底座", short: "寓意平安圆满 / 老挝大红酸枝", desc: "此款底座顶部为正圆，腰部施以繁复的镂空雕花工艺。线条流畅且极具张力，四个马蹄足稳稳扎根，寓意平安圆满。" },
+            { id: 2, name: "02 几何矩形瘿木底座", short: "现代设计融合 / 天然树瘤纹", desc: "不仅有传统的沉稳，更融入了现代的几何线条。中间这块纹理独特的瘿木，如同天然画卷，适合搭配现代简约茶具。" },
+            { id: 3, name: "03 经典方胜纹托盘", short: "高实用性 / 书房百搭", desc: "方胜纹代表着同心双合、延绵不断。这款托盘实用性极强，无论是放置茶杯还是文房四宝，都能压住整个桌面的气场。" }
+        ];
+
+        let activeId = 1;
+
+        function renderList() {
+            const listEl = document.getElementById('item-list');
+            listEl.innerHTML = products.map(p => `
+                <div onclick="selectItem(${p.id})" class="p-3 rounded cursor-pointer transition border ${activeId === p.id ? 'bg-dark border-gold' : 'bg-dark border-gray-800 hover:border-gray-600'}">
+                    <h3 class="${activeId === p.id ? 'text-gold' : 'text-gray-300'} font-bold text-sm">${p.name}</h3>
+                    <p class="text-xs text-gray-500 mt-1">${p.short}</p>
+                </div>
+            `).join('');
+            
+            const activeProduct = products.find(p => p.id === activeId);
+            document.getElementById('detail-title').innerText = activeProduct.name.substring(3); // 去掉前面的数字
+            document.getElementById('detail-desc').innerText = activeProduct.desc;
+        }
+
+        function selectItem(id) {
+            activeId = id;
+            renderList();
+        }
+
+        // 初始化渲染
+        renderList();
+    </script>
+</body>
+</html>
