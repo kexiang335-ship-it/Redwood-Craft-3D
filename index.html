@@ -18,6 +18,14 @@
             }
         }
     </script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
 </head>
 <body class="bg-dark text-gray-300 h-screen flex flex-col font-sans overflow-hidden">
 
@@ -46,16 +54,18 @@
 
         <main class="flex-1 flex flex-col relative bg-black">
             <div class="absolute top-4 left-4 flex gap-2 z-10">
-                <button class="bg-panel border border-gray-700 text-xs px-3 py-1 rounded hover:text-white">纯色背景</button>
-                <button class="bg-panel border border-gray-700 text-xs px-3 py-1 rounded hover:text-white">书桌场景</button>
-                <button class="bg-panel border border-gray-700 text-xs px-3 py-1 rounded hover:text-white">茶几场景</button>
+                <button class="bg-panel border border-gray-700 text-xs px-3 py-1 rounded hover:text-white transition">纯色背景</button>
+                <button class="bg-panel border border-gray-700 text-xs px-3 py-1 rounded hover:text-white transition">书桌场景</button>
             </div>
             
-            <div class="flex-1 flex items-center justify-center flex-col border-2 border-dashed border-gray-800 m-8 rounded-xl">
-                <svg class="w-16 h-16 text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
-                <p class="text-gray-500">3D 模型渲染区</p>
-                <p class="text-xs text-gray-600 mt-2">支持鼠标拖拽 360° 旋转与滚轮缩放</p>
-                <p class="text-xs text-gold mt-4">（后续在此嵌入 3D 模型代码）</p>
+            <div id="model-container" class="flex-1 m-6 rounded-xl overflow-hidden relative cursor-move border border-gray-800">
+                <div id="loading-text" class="absolute inset-0 flex flex-col items-center justify-center text-gold z-10 bg-black bg-opacity-90">
+                    <svg class="animate-spin h-10 w-10 mb-4 text-gold" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span id="loading-msg" class="text-sm tracking-widest">正在为您调取 3D 藏品档案...</span>
+                </div>
             </div>
         </main>
 
@@ -63,49 +73,60 @@
             <div class="p-6 border-b border-gray-800">
                 <h2 id="detail-title" class="text-2xl font-bold text-white mb-2">加载中...</h2>
                 <div class="flex items-center gap-2 mb-4">
-                    <span class="bg-gray-800 text-xs px-2 py-1 rounded">全实木</span>
-                    <span class="bg-gray-800 text-xs px-2 py-1 rounded">手工工艺</span>
+                    <span id="detail-tag1" class="bg-gray-800 text-xs px-2 py-1 rounded text-gray-300">材质</span>
+                    <span id="detail-tag2" class="bg-gray-800 text-xs px-2 py-1 rounded text-gray-300">工艺</span>
                 </div>
-                <p id="detail-desc" class="text-sm text-gray-400 leading-relaxed">
-                    介绍内容...
-                </p>
-            </div>
-
-            <div class="p-6 border-b border-gray-800 flex-1">
-                <h3 class="text-sm font-bold text-gray-300 mb-3">文化渊源</h3>
-                <p class="text-xs text-gray-500 mb-6 leading-relaxed">红木底座源于明清文人雅士的案头陈设，讲究“托物言志”。不仅能防止器物受潮，更能衬托出上方花瓶或紫砂壶的古朴气质。</p>
-                
-                <h3 class="text-sm font-bold text-gray-300 mb-3">实景搭配参考</h3>
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="bg-dark h-24 rounded border border-gray-800 flex items-center justify-center text-xs text-gray-600">搭配紫砂壶</div>
-                    <div class="bg-dark h-24 rounded border border-gray-800 flex items-center justify-center text-xs text-gray-600">书房案头</div>
-                </div>
+                <p id="detail-short" class="text-sm text-gray-400 leading-relaxed font-bold mb-2"></p>
+                <p id="detail-desc" class="text-xs text-gray-500 leading-relaxed"></p>
             </div>
 
             <div class="p-6 bg-dark">
                 <h3 class="text-center text-gold font-bold mb-4 text-sm">扫码添加私域，享独家排单</h3>
                 <div class="flex gap-4 justify-center">
-                    
                     <div class="flex flex-col items-center w-1/2">
-                        <img src="wechat.jpg" alt="主理人微信" class="w-full rounded-lg border-2 border-gold shadow-lg mb-2 object-cover aspect-square hover:scale-105 transition-transform">
-                        <span class="text-xs text-gray-300 font-bold mt-2">主理人微信</span>
+                        <img src="https://github.com/user-attachments/assets/b076e097-bbd0-4edd-905c-5cdb6be4a1e2" alt="主理人微信" class="w-full rounded-lg border-2 border-gold shadow-lg mb-2 object-cover aspect-square hover:scale-105 transition-transform">
+                        <span class="text-xs text-gray-300 font-bold mt-1">主理人微信</span>
                     </div>
-                    
                     <div class="flex flex-col items-center w-1/2">
-                        <img src="group.jpg" alt="专属社群" class="w-full rounded-lg border border-gray-600 mb-2 object-cover aspect-square hover:border-gray-400 transition-colors">
+                        <img src="https://github.com/user-attachments/assets/05483ed4-8298-41ea-80f0-3d255ebb099d" alt="专属社群" class="w-full rounded-lg border border-gray-600 mb-2 object-cover aspect-square hover:border-gray-400 transition-colors">
+                        <span class="text-xs text-gray-500 mt-1">专属社群</span>
                     </div>
-                    
                 </div>
-                <p class="text-center text-xs text-gray-600 mt-5">内部专属展厅 仅限扫码邀约加入</p>
             </div>
         </aside>
     </div>
 
     <script>
+        // 🚨 核心配置区：以后每增加一个商品，就在这里加一行
+        // 注意 mtlPath 和 objPath，对应你在 GitHub 里建的文件夹路径
         const products = [
-            { id: 1, name: "01 镂空精雕圆形底座", short: "寓意平安圆满 / 老挝大红酸枝", desc: "此款底座顶部为正圆，腰部施以繁复的镂空雕花工艺。线条流畅且极具张力，四个马蹄足稳稳扎根，寓意平安圆满。" },
-            { id: 2, name: "02 几何矩形瘿木底座", short: "现代设计融合 / 天然树瘤纹", desc: "不仅有传统的沉稳，更融入了现代的几何线条。中间这块纹理独特的瘿木，如同天然画卷，适合搭配现代简约茶具。" },
-            { id: 3, name: "03 经典方胜纹托盘", short: "高实用性 / 书房百搭", desc: "方胜纹代表着同心双合、延绵不断。这款托盘实用性极强，无论是放置茶杯还是文房四宝，都能压住整个桌面的气场。" }
+            { 
+                id: 1, 
+                name: "01 紫光檀圆底座", 
+                tag1: "紫光檀", tag2: "整木挖空",
+                short: "密度极高 / 温润如玉", 
+                desc: "极简的圆形设计，底部带有微小的垫足。紫光檀深邃的色泽在光线下呈现出幽黑的光晕，是茶室案头的绝佳点缀。",
+                mtlPath: "model_1/material.mtl", 
+                objPath: "model_1/model.obj"
+            },
+            { 
+                id: 2, 
+                name: "02 几何矩形瘿木底座", 
+                tag1: "老挝瘿木", tag2: "榫卯拼合",
+                short: "现代设计融合 / 天然树瘤纹", 
+                desc: "不仅有传统的沉稳，更融入了现代的几何线条。中间这块纹理独特的瘿木，如同天然画卷，适合搭配现代简约茶具。",
+                mtlPath: "model_2/material.mtl", // 等你有了第二个模型，放进 model_2 文件夹即可
+                objPath: "model_2/model.obj"
+            },
+            { 
+                id: 3, 
+                name: "03 经典方胜纹托盘", 
+                tag1: "大红酸枝", tag2: "透雕工艺",
+                short: "高实用性 / 书房百搭", 
+                desc: "方胜纹代表着同心双合、延绵不断。这款托盘实用性极强，无论是放置茶杯还是文房四宝，都能压住整个桌面的气场。",
+                mtlPath: "model_3/material.mtl", 
+                objPath: "model_3/model.obj"
+            }
         ];
 
         let activeId = 1;
@@ -120,17 +141,137 @@
             `).join('');
             
             const activeProduct = products.find(p => p.id === activeId);
-            document.getElementById('detail-title').innerText = activeProduct.name.substring(3); // 去掉前面的数字
+            document.getElementById('detail-title').innerText = activeProduct.name.substring(3);
+            document.getElementById('detail-tag1').innerText = activeProduct.tag1;
+            document.getElementById('detail-tag2').innerText = activeProduct.tag2;
+            document.getElementById('detail-short').innerText = activeProduct.short;
             document.getElementById('detail-desc').innerText = activeProduct.desc;
         }
 
+        // 点击商品列表触发
         function selectItem(id) {
+            if (activeId === id) return; // 重复点击不触发
             activeId = id;
             renderList();
+            
+            const activeProduct = products.find(p => p.id === activeId);
+            // 呼叫 3D 渲染引擎切换模型
+            if (window.switch3DModel) {
+                window.switch3DModel(activeProduct.mtlPath, activeProduct.objPath);
+            }
         }
-
-        // 初始化渲染
+        
         renderList();
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
+        import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+
+        const container = document.getElementById('model-container');
+        const loadingText = document.getElementById('loading-text');
+        const loadingMsg = document.getElementById('loading-msg');
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0a0a); 
+
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.set(0, 5, 12); 
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; 
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = true; 
+        controls.autoRotateSpeed = 1.2;
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); 
+        scene.add(ambientLight);
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1.2); 
+        mainLight.position.set(10, 20, 10);
+        scene.add(mainLight);
+        const fillLight = new THREE.DirectionalLight(0xffe8c4, 0.5); 
+        fillLight.position.set(-10, 5, -10);
+        scene.add(fillLight);
+
+        let currentModel = null; // 用于存储当前显示的 3D 模型
+
+        // 定义一个全局函数，供上面的普通 JS 调用
+        window.switch3DModel = function(mtlPath, objPath) {
+            loadingText.style.display = 'flex';
+            loadingMsg.innerText = '正在为您调取 3D 藏品档案...';
+
+            // 1. 卸载旧模型 (非常重要，否则内存会爆掉)
+            if (currentModel) {
+                scene.remove(currentModel);
+                currentModel.traverse((child) => {
+                    if (child.isMesh) {
+                        child.geometry.dispose();
+                        if (child.material.length) {
+                            child.material.forEach(mat => { mat.dispose(); if(mat.map) mat.map.dispose(); });
+                        } else {
+                            child.material.dispose();
+                            if(child.material.map) child.material.map.dispose();
+                        }
+                    }
+                });
+                currentModel = null;
+            }
+
+            // 2. 加载新模型
+            const mtlLoader = new MTLLoader();
+            mtlLoader.load(mtlPath, function(materials) {
+                materials.preload();
+                const objLoader = new OBJLoader();
+                objLoader.setMaterials(materials);
+                
+                objLoader.load(objPath, function(object) {
+                    const box = new THREE.Box3().setFromObject(object);
+                    const center = box.getCenter(new THREE.Vector3());
+                    const size = box.getSize(new THREE.Vector3());
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    const scale = 7 / maxDim; 
+                    object.scale.set(scale, scale, scale);
+                    object.position.sub(center.multiplyScalar(scale)); 
+                    object.position.y -= 0.5; 
+
+                    currentModel = object; // 赋值给全局变量
+                    scene.add(object);
+                    loadingText.style.display = 'none'; 
+                    
+                }, undefined, function(error) {
+                    loadingMsg.innerHTML = '<span class="text-red-400">档案尚未建立 (模型文件未找到)</span>';
+                });
+            }, undefined, function(error) {
+                loadingMsg.innerHTML = '<span class="text-red-400">档案尚未建立 (材质文件未找到)</span>';
+            });
+        };
+
+        window.addEventListener('resize', () => {
+            if (!container) return;
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update(); 
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // 首次打开页面，自动加载第一个商品（对应 activeId = 1）
+        window.onload = () => {
+            const initialProduct = products.find(p => p.id === activeId);
+            window.switch3DModel(initialProduct.mtlPath, initialProduct.objPath);
+        };
     </script>
 </body>
 </html>
