@@ -97,8 +97,6 @@
     </div>
 
     <script>
-        // 🚨 核心配置区：以后每增加一个商品，就在这里加一行
-        // 注意 mtlPath 和 objPath，对应你在 GitHub 里建的文件夹路径
         const products = [
             { 
                 id: 1, 
@@ -107,7 +105,8 @@
                 short: "密度极高 / 温润如玉", 
                 desc: "极简的圆形设计，底部带有微小的垫足。紫光檀深邃的色泽在光线下呈现出幽黑的光晕，是茶室案头的绝佳点缀。",
                 mtlPath: "model_1/material.mtl", 
-                objPath: "model_1/model.obj"
+                // ↓↓↓ 重点：这里已经改成了你真实上传的那个长名字文件 ↓↓↓
+                objPath: "model_1/379848b4233db44fd73ee55af3d2df81.obj"
             },
             { 
                 id: 2, 
@@ -115,7 +114,7 @@
                 tag1: "老挝瘿木", tag2: "榫卯拼合",
                 short: "现代设计融合 / 天然树瘤纹", 
                 desc: "不仅有传统的沉稳，更融入了现代的几何线条。中间这块纹理独特的瘿木，如同天然画卷，适合搭配现代简约茶具。",
-                mtlPath: "model_2/material.mtl", // 等你有了第二个模型，放进 model_2 文件夹即可
+                mtlPath: "model_2/material.mtl", 
                 objPath: "model_2/model.obj"
             },
             { 
@@ -148,14 +147,12 @@
             document.getElementById('detail-desc').innerText = activeProduct.desc;
         }
 
-        // 点击商品列表触发
         function selectItem(id) {
-            if (activeId === id) return; // 重复点击不触发
+            if (activeId === id) return; 
             activeId = id;
             renderList();
             
             const activeProduct = products.find(p => p.id === activeId);
-            // 呼叫 3D 渲染引擎切换模型
             if (window.switch3DModel) {
                 window.switch3DModel(activeProduct.mtlPath, activeProduct.objPath);
             }
@@ -196,82 +193,4 @@
         const mainLight = new THREE.DirectionalLight(0xffffff, 1.2); 
         mainLight.position.set(10, 20, 10);
         scene.add(mainLight);
-        const fillLight = new THREE.DirectionalLight(0xffe8c4, 0.5); 
-        fillLight.position.set(-10, 5, -10);
-        scene.add(fillLight);
-
-        let currentModel = null; // 用于存储当前显示的 3D 模型
-
-        // 定义一个全局函数，供上面的普通 JS 调用
-        window.switch3DModel = function(mtlPath, objPath) {
-            loadingText.style.display = 'flex';
-            loadingMsg.innerText = '正在为您调取 3D 藏品档案...';
-
-            // 1. 卸载旧模型 (非常重要，否则内存会爆掉)
-            if (currentModel) {
-                scene.remove(currentModel);
-                currentModel.traverse((child) => {
-                    if (child.isMesh) {
-                        child.geometry.dispose();
-                        if (child.material.length) {
-                            child.material.forEach(mat => { mat.dispose(); if(mat.map) mat.map.dispose(); });
-                        } else {
-                            child.material.dispose();
-                            if(child.material.map) child.material.map.dispose();
-                        }
-                    }
-                });
-                currentModel = null;
-            }
-
-            // 2. 加载新模型
-            const mtlLoader = new MTLLoader();
-            mtlLoader.load(mtlPath, function(materials) {
-                materials.preload();
-                const objLoader = new OBJLoader();
-                objLoader.setMaterials(materials);
-                
-                objLoader.load(objPath, function(object) {
-                    const box = new THREE.Box3().setFromObject(object);
-                    const center = box.getCenter(new THREE.Vector3());
-                    const size = box.getSize(new THREE.Vector3());
-                    const maxDim = Math.max(size.x, size.y, size.z);
-                    const scale = 7 / maxDim; 
-                    object.scale.set(scale, scale, scale);
-                    object.position.sub(center.multiplyScalar(scale)); 
-                    object.position.y -= 0.5; 
-
-                    currentModel = object; // 赋值给全局变量
-                    scene.add(object);
-                    loadingText.style.display = 'none'; 
-                    
-                }, undefined, function(error) {
-                    loadingMsg.innerHTML = '<span class="text-red-400">档案尚未建立 (模型文件未找到)</span>';
-                });
-            }, undefined, function(error) {
-                loadingMsg.innerHTML = '<span class="text-red-400">档案尚未建立 (材质文件未找到)</span>';
-            });
-        };
-
-        window.addEventListener('resize', () => {
-            if (!container) return;
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-        });
-
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update(); 
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        // 首次打开页面，自动加载第一个商品（对应 activeId = 1）
-        window.onload = () => {
-            const initialProduct = products.find(p => p.id === activeId);
-            window.switch3DModel(initialProduct.mtlPath, initialProduct.objPath);
-        };
-    </script>
-</body>
-</html>
+        const fillLight = new THREE.DirectionalLight(0xffe
