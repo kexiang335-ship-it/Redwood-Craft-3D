@@ -41,7 +41,6 @@
 
     <div class="flex flex-1 overflow-hidden">
         
-        <!-- 左侧栏 -->
         <aside class="w-64 bg-panel border-r border-gray-800 flex flex-col shrink-0">
             <div class="p-4 border-b border-gray-800">
                 <div class="flex gap-2">
@@ -54,16 +53,13 @@
             </div>
         </aside>
 
-        <!-- 中间：3D 动态渲染区 (已改为亮色主题) -->
         <main class="flex-1 flex flex-col relative bg-gray-100">
-            <!-- 适配亮色背景的按钮 -->
             <div class="absolute top-4 left-4 flex gap-2 z-10">
                 <button class="bg-white border border-gray-300 text-gray-700 text-xs px-3 py-1 rounded hover:bg-gray-50 transition shadow-sm font-bold">纯色背景</button>
                 <button class="bg-white border border-gray-300 text-gray-700 text-xs px-3 py-1 rounded hover:bg-gray-50 transition shadow-sm">书桌场景</button>
             </div>
             
             <div id="model-container" class="flex-1 m-6 rounded-xl overflow-hidden relative cursor-move border border-gray-300 shadow-inner bg-white">
-                <!-- 适配亮色背景的加载提示 -->
                 <div id="loading-text" class="absolute inset-0 flex flex-col items-center justify-center z-10 bg-white bg-opacity-90">
                     <svg class="animate-spin h-10 w-10 mb-4 text-gold" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -74,7 +70,6 @@
             </div>
         </main>
 
-        <!-- 右侧栏 -->
         <aside class="w-80 bg-panel border-l border-gray-800 flex flex-col shrink-0 overflow-y-auto">
             <div class="p-6 border-b border-gray-800">
                 <h2 id="detail-title" class="text-2xl font-bold text-white mb-2">加载中...</h2>
@@ -110,9 +105,7 @@
                 tag1: "紫光檀", tag2: "整木挖空",
                 short: "密度极高 / 温润如玉", 
                 desc: "极简的圆形设计，底部带有微小的垫足。紫光檀深邃的色泽在光线下呈现出幽黑的光晕，是茶室案头的绝佳点缀。",
-                // 🚨 如果你在压缩网站导出了新文件并重命名为 model.glb，这里就填 model_1/model.glb
-                // 如果你上传的是原来的长串名字，请替换这里的路径
-                modelPath: "model_1/model.glb" 
+                modelPath: "model_1/model.glb" // 这里指向你的模型文件
             },
             { 
                 id: 2, 
@@ -175,7 +168,6 @@
         const loadingMsg = document.getElementById('loading-msg');
 
         const scene = new THREE.Scene();
-        // 🚨 核心修改：将背景改为非常高级的浅灰色 (接近白色，但不会刺眼)
         scene.background = new THREE.Color(0xf5f5f5); 
 
         const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -194,30 +186,22 @@
         controls.autoRotate = true; 
         controls.autoRotateSpeed = 1.2;
 
-        // 🚨 核心修改：针对深色木材，提升了摄影棚的灯光强度
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2); // 提高基础亮度
+        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2); 
         scene.add(ambientLight);
         
-        const mainLight = new THREE.DirectionalLight(0xffffff, 1.5); // 提高主光
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1.5); 
         mainLight.position.set(10, 20, 10);
         scene.add(mainLight);
         
-        const fillLight = new THREE.DirectionalLight(0xffe8c4, 1.0); // 暖色补光也调亮
+        const fillLight = new THREE.DirectionalLight(0xffe8c4, 1.0); 
         fillLight.position.set(-10, 5, -10);
         scene.add(fillLight);
 
-        const fillLight = new THREE.DirectionalLight(0xffe8c4, 1.0); // 暖色补光也调亮
-        fillLight.position.set(-10, 5, -10);
-        scene.add(fillLight);
-
-        // 👇👇👇 新加的地灯代码开始 👇👇👇
+        // 新增加的底部补光灯，照亮模型底部
         const bottomLight = new THREE.DirectionalLight(0xffffff, 0.8); 
-        bottomLight.position.set(0, -10, 0); // 位置在正下方，光线往上打
+        bottomLight.position.set(0, -10, 0); 
         scene.add(bottomLight);
-        // 👆👆👆 新加的地灯代码结束 👆👆👆
 
-        let currentModel = null;
-        const gltfLoader = new GLTFLoader();
         let currentModel = null;
         const gltfLoader = new GLTFLoader(); 
 
