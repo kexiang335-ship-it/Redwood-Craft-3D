@@ -206,6 +206,18 @@
         fillLight.position.set(-10, 5, -10);
         scene.add(fillLight);
 
+        const fillLight = new THREE.DirectionalLight(0xffe8c4, 1.0); // 暖色补光也调亮
+        fillLight.position.set(-10, 5, -10);
+        scene.add(fillLight);
+
+        // 👇👇👇 新加的地灯代码开始 👇👇👇
+        const bottomLight = new THREE.DirectionalLight(0xffffff, 0.8); 
+        bottomLight.position.set(0, -10, 0); // 位置在正下方，光线往上打
+        scene.add(bottomLight);
+        // 👆👆👆 新加的地灯代码结束 👆👆👆
+
+        let currentModel = null;
+        const gltfLoader = new GLTFLoader();
         let currentModel = null;
         const gltfLoader = new GLTFLoader(); 
 
