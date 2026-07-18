@@ -1,0 +1,34 @@
+{
+  "categories": [
+    {
+      "id": "yuanxing_dizuo",
+      "name": "圆形底座",
+      "products": [
+        {
+          "id": "ziguangtan_tengtiao",
+          "name": "臻品紫光檀·明式雕花圆底座"
+        }
+      ]
+    },
+    {
+      "id": "yuanxing_jijia",
+      "name": "圆形几架",
+      "products": []
+    },
+    {
+      "id": "fangxing_dizuo",
+      "name": "方形底座",
+      "products": [
+        {
+          "id": "hualimu_huiwen",
+          "name": "雅韵花梨木·回纹正方底座"
+        }
+      ]
+    },
+    {
+      "id": "fangxing_jijia",
+      "name": "方形几架",
+      "products": []
+    }
+  ]
+}
