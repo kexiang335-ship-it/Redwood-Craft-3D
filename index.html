@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>南京瑞雨山科技有限公司 | 3D数字展厅</title>
+    <title>雨山红木 | 3D数字展厅</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
@@ -11,35 +11,43 @@
         html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #F5F4F0; color: #2C1A14; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; }
         .app-container { display: flex; height: 100vh; overflow: hidden; }
         
-        /* 左侧栏 */
+        /* 侧边栏与品牌Logo */
         .sidebar { width: 360px; background-color: #FAF8F5; border-right: 1px solid #EBE6DF; padding: 30px; display: flex; flex-direction: column; overflow-y: auto; z-index: 100; transition: left 0.3s ease; }
-        .brand-title { font-family: 'Noto Serif SC', serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 25px; color: #3E2723; }
-        .search-box { width: 100%; padding: 12px 15px; border: 1px solid #D7CCC8; border-radius: 6px; background: transparent; margin-bottom: 25px; font-size: 0.95rem; outline: none; }
-        .category-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
-        .category-item { padding: 8px 14px; background-color: #EFEBE4; border-radius: 20px; font-size: 0.85rem; cursor: pointer; color: #5D4037; transition: all 0.3s; }
-        .category-item:hover { background-color: #3E2723; color: #FFF; }
+        .brand-header { display: flex; align-items: center; margin-bottom: 25px; gap: 15px; }
+        .brand-logo { width: 50px; height: 50px; object-fit: contain; border-radius: 5px; }
+        .brand-title { font-family: 'Noto Serif SC', serif; font-size: 1.5rem; font-weight: 700; color: #3E2723; margin: 0; }
         
-        /* 产品信息 */
-        .product-info { margin-top: auto; }
-        .product-name { font-family: 'Noto Serif SC', serif; font-size: 1.8rem; margin: 0 0 10px 0; }
-        .product-price { font-size: 1.4rem; color: #8D6E63; font-weight: bold; margin-bottom: 20px; }
-        .product-desc { font-size: 0.95rem; line-height: 1.8; color: #5D4037; margin-bottom: 30px; }
+        /* 折叠菜单栏 */
+        .catalog-menu { margin-bottom: 30px; flex: 1; overflow-y: auto; }
+        .category-group { margin-bottom: 15px; }
+        .category-title { font-weight: bold; color: #5D4037; cursor: pointer; padding: 10px; background-color: #EFEBE4; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .category-title:hover { background-color: #D7CCC8; }
+        .product-list { list-style: none; padding: 0; margin: 0; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .product-list.active { max-height: 500px; /* 展开菜单 */ }
+        .product-item { padding: 10px 10px 10px 25px; cursor: pointer; color: #6D4C41; font-size: 0.9rem; border-bottom: 1px dashed #EBE6DF; }
+        .product-item:hover, .product-item.selected { color: #D84315; font-weight: bold; background-color: #F5F4F0; }
         
-        /* 3D 视图 */
+        /* 产品信息展示区 */
+        .product-info { padding-top: 20px; border-top: 2px solid #EBE6DF; }
+        .product-name { font-family: 'Noto Serif SC', serif; font-size: 1.5rem; margin: 0 0 10px 0; }
+        .product-price { font-size: 1.3rem; color: #8D6E63; font-weight: bold; margin-bottom: 15px; }
+        .product-desc { font-size: 0.9rem; line-height: 1.8; color: #5D4037; margin-bottom: 20px; white-space: pre-wrap; }
+        
+        /* 3D 视图区 */
         .model-viewer-container { flex: 1; position: relative; background-color: #F5F4F0; }
-        model-viewer { width: 100%; height: 100%; outline: none; --poster-color: transparent; }
+        model-viewer { width: 100%; height: 100%; outline: none; }
         
+        /* 微信悬浮窗 */
+        .wechat-float { position: fixed; bottom: 30px; right: 30px; width: 55px; height: 55px; background: #3E2723; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); color: white; font-size: 0.85rem; font-weight: bold;}
+        .wechat-qr { display: none; position: fixed; bottom: 95px; right: 30px; width: 180px; border: 1px solid #EBE6DF; border-radius: 8px; z-index: 1000; background: #FFF; padding: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; }
+        .wechat-qr img { width: 100%; height: auto; border-radius: 4px; }
+        .wechat-qr p { margin: 8px 0 0 0; font-size: 0.85rem; color: #3E2723; font-weight: bold; }
+
         /* 移动端菜单 */
         .mobile-header { display: none; padding: 15px 20px; background-color: #FAF8F5; border-bottom: 1px solid #EBE6DF; align-items: center; justify-content: space-between; }
         .hamburger { font-size: 1.5rem; background: none; border: none; cursor: pointer; color: #3E2723; }
         .mobile-info-container { display: none; }
         
-        /* 微信悬浮窗 */
-        .wechat-float { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; background: #3E2723; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); color: white; font-size: 0.8rem; font-weight: bold;}
-        .wechat-qr { display: none; position: fixed; bottom: 90px; right: 30px; width: 160px; border: 1px solid #EBE6DF; border-radius: 8px; z-index: 1000; background: #FFF; padding: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
-        .wechat-qr img { width: 100%; height: auto; border-radius: 4px; }
-        .wechat-qr p { margin: 8px 0 0 0; font-size: 0.85rem; color: #3E2723; font-weight: bold; }
-
         @media (max-width: 768px) {
             .app-container { flex-direction: column; }
             .mobile-header { display: flex; }
@@ -56,28 +64,25 @@
         <!-- 移动端顶部 -->
         <div class="mobile-header">
             <button class="hamburger" onclick="toggleMenu()">☰</button>
-            <div class="brand-title" style="margin-bottom: 0;">南京瑞雨山科技</div>
+            <h2 class="brand-title">雨山红木</h2>
             <div style="width: 24px;"></div>
         </div>
 
         <!-- 侧边导航栏 -->
         <div class="sidebar" id="sidebar">
-            <div class="brand-title">南京瑞雨山科技有限公司</div>
-            <input type="text" class="search-box" placeholder="搜索红木摆件..." />
-            
-            <div class="category-list">
-                <!-- 点击直接重新加载页面并带上参数 -->
-                <div class="category-item" onclick="window.location.href='?id=moxing_01'">圆底座01 (点击测试)</div>
-                <div class="category-item">圆形几架</div>
-                <div class="category-item">方形底座</div>
-                <div class="category-item">方形几架</div>
+            <div class="brand-header">
+                <img src="./logo.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
+                <h2 class="brand-title">雨山红木</h2>
             </div>
+            
+            <!-- 动态生成的商品目录 -->
+            <div class="catalog-menu" id="catalog-menu"></div>
             
             <!-- 电脑端信息区 -->
             <div class="product-info">
-                <h1 class="product-name">加载中...</h1>
-                <div class="product-price">---</div>
-                <p class="product-desc">请点击上方分类按钮，或在网址后加上 ?id=moxing_01 查看模型。</p>
+                <h1 class="product-name">欢迎莅临</h1>
+                <div class="product-price"></div>
+                <p class="product-desc">请在上方菜单中选择您感兴趣的红木器物。</p>
             </div>
         </div>
 
@@ -88,21 +93,52 @@
 
         <!-- 移动端底部信息区 -->
         <div class="mobile-info-container">
-            <h1 class="product-name">加载中...</h1>
-            <div class="product-price">---</div>
+            <h1 class="product-name">欢迎莅临</h1>
+            <div class="product-price"></div>
             <p class="product-desc">请点击左上角菜单选择产品。</p>
         </div>
     </div>
 
-    <!-- 微信客服悬浮窗 (读取外层的wechat.jpg) -->
-    <div class="wechat-float" onclick="toggleWechat()">微信</div>
+    <!-- 微信客服悬浮窗 -->
+    <div class="wechat-float" onclick="toggleWechat()">联系<br>主理人</div>
     <div class="wechat-qr" id="wechat-qr">
         <img src="./wechat.jpg" alt="主理人微信">
-        <p>扫码添加主理人</p>
+        <p>扫码添加主理人微信</p>
     </div>
 
-    <!-- 动态数据拉取逻辑 -->
     <script>
+        // ==========================================
+        // 【核心配置区：以后上新商品，只改这里！】
+        // ==========================================
+        const CATALOG = [
+            {
+                categoryFolder: "yuanxing_dizuo", // 大分类的文件夹名
+                categoryName: "圆形底座",         // 网页上显示的大分类名字
+                items: [
+                    // 以后在这里加新商品，复制这一行修改即可
+                    { folder: "ziguangtan_01", name: "紫光檀藤条/回纹圆底座" }
+                ]
+            },
+            {
+                categoryFolder: "yuanxing_jijia",
+                categoryName: "圆形几架",
+                items: [
+                    // 示例： { folder: "shangpin_02", name: "大叶紫檀圆形几架" }
+                ]
+            },
+            {
+                categoryFolder: "fangxing_dizuo",
+                categoryName: "方形底座",
+                items: []
+            },
+            {
+                categoryFolder: "fangxing_jijia",
+                categoryName: "方形几架",
+                items: []
+            }
+        ];
+        // ==========================================
+
         function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
         function closeMenu() { document.getElementById('sidebar').classList.remove('open'); }
         function toggleWechat() { 
@@ -110,41 +146,79 @@
             qr.style.display = qr.style.display === 'block' ? 'none' : 'block';
         }
 
+        // 初始化菜单和点击事件
         document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const folderName = urlParams.get('id');
+            const menuContainer = document.getElementById('catalog-menu');
+            
+            // 自动生成左侧菜单
+            CATALOG.forEach(category => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'category-group';
+                
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'category-title';
+                titleDiv.innerHTML = `${category.categoryName} <span>+</span>`;
+                
+                const ul = document.createElement('ul');
+                ul.className = 'product-list';
+                
+                // 折叠展开逻辑
+                titleDiv.onclick = () => {
+                    const isActive = ul.classList.contains('active');
+                    document.querySelectorAll('.product-list').forEach(list => list.classList.remove('active'));
+                    document.querySelectorAll('.category-title span').forEach(span => span.innerText = '+');
+                    if (!isActive) {
+                        ul.classList.add('active');
+                        titleDiv.querySelector('span').innerText = '-';
+                    }
+                };
 
+                category.items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'product-item';
+                    li.innerText = item.name;
+                    // 商品点击逻辑
+                    li.onclick = () => {
+                        document.querySelectorAll('.product-item').forEach(el => el.classList.remove('selected'));
+                        li.classList.add('selected');
+                        loadProduct(category.categoryFolder, item.folder);
+                        if(window.innerWidth <= 768) closeMenu(); // 手机端点完自动收起菜单
+                    };
+                    ul.appendChild(li);
+                });
+
+                groupDiv.appendChild(titleDiv);
+                groupDiv.appendChild(ul);
+                menuContainer.appendChild(groupDiv);
+            });
+        });
+
+        // 加载具体商品的数据
+        function loadProduct(categoryFolder, productFolder) {
+            const folderPath = `./products/${categoryFolder}/${productFolder}/`;
             const names = document.querySelectorAll('.product-name');
             const prices = document.querySelectorAll('.product-price');
             const descs = document.querySelectorAll('.product-desc');
             const viewer = document.getElementById('main-viewer');
 
-            if (folderName) {
-                const folderPath = `./products/${folderName}/`;
-                
-                // 读取 info.json
-                fetch(folderPath + 'info.json')
-                    .then(res => {
-                        if(!res.ok) throw new Error();
-                        return res.json();
-                    })
-                    .then(data => {
-                        names.forEach(el => el.innerText = data.name || '未命名产品');
-                        prices.forEach(el => el.innerText = data.price || '价格未定');
-                        descs.forEach(el => el.innerText = data.description || '暂无描述');
-                    })
-                    .catch(err => {
-                        names.forEach(el => el.innerText = '未找到产品');
-                        descs.forEach(el => el.innerText = '请检查 info.json 是否上传。');
-                    });
-                
-                // 读取模型，后缀改为了 .glb
-                viewer.src = folderPath + 'model.glb';
-            } else {
-                names.forEach(el => el.innerText = '请选择红木展品');
-                prices.forEach(el => el.innerText = '');
-            }
-        });
+            names.forEach(el => el.innerText = "加载中...");
+            
+            // 读取 info.json
+            fetch(folderPath + 'info.json')
+                .then(res => res.json())
+                .then(data => {
+                    names.forEach(el => el.innerText = data.name || '未命名产品');
+                    prices.forEach(el => el.innerText = data.price || '价格未定');
+                    descs.forEach(el => el.innerText = data.description || '暂无描述');
+                })
+                .catch(err => {
+                    names.forEach(el => el.innerText = '信息读取失败');
+                    descs.forEach(el => el.innerText = '未找到对应的 info.json 文案文件。');
+                });
+            
+            // 加载模型 (根据你目前的格式，这里是 .gltf)
+            viewer.src = folderPath + 'model.gltf';
+        }
     </script>
 </body>
 </html>
