@@ -3,270 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数字藏品阁 - 南京瑞雨山科技有限公司</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        dark: '#121212',
-                        panel: '#1E1E1E',
-                        gold: '#D4AF37'
-                    }
-                }
-            }
-        }
-    </script>
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-        }
-      }
-    </script>
-</head>
-<body class="bg-dark text-gray-300 h-screen flex flex-col font-sans overflow-hidden">
-
-    <header class="h-16 bg-panel border-b border-gray-800 flex items-center justify-between px-6 shrink-0">
-        <div class="flex items-center gap-4">
-            <h1 class="text-xl font-bold text-gold tracking-widest">数字藏品阁</h1>
-            <span class="text-xs text-gray-500 border-l border-gray-700 pl-4">南京瑞雨山科技有限公司 旗下</span>
-        </div>
-        <div class="flex items-center">
-            <input type="text" placeholder="搜索红木摆件、茶具..." class="bg-dark border border-gray-700 text-sm rounded-full px-4 py-1.5 focus:outline-none focus:border-gold w-64">
-        </div>
-    </header>
-
-    <div class="flex flex-1 overflow-hidden">
+    <title>南京瑞雨山科技有限公司 | 3D数字展厅</title>
+    <!-- 引入 3D 渲染组件 -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #F5F4F0; color: #2C1A14; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+        .app-container { display: flex; height: 100vh; overflow: hidden; }
         
-        <aside class="w-64 bg-panel border-r border-gray-800 flex flex-col shrink-0">
-            <div class="p-4 border-b border-gray-800">
-                <div class="flex gap-2">
-                    <button class="bg-gold text-dark px-3 py-1 rounded text-sm font-bold">红木摆件</button>
-                    <button class="hover:bg-gray-800 text-gray-400 px-3 py-1 rounded text-sm transition">禅意茶具</button>
-                </div>
-            </div>
-            <div class="flex-1 overflow-y-auto p-4 space-y-3" id="item-list">
-                <!-- 动态生成 -->
-            </div>
-        </aside>
+        /* 侧边栏/抽屉 */
+        .sidebar { width: 360px; background-color: #FAF8F5; border-right: 1px solid #EBE6DF; padding: 30px; display: flex; flex-direction: column; overflow-y: auto; z-index: 100; transition: left 0.3s ease; }
+        .brand-title { font-family: 'Noto Serif SC', serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 25px; color: #3E2723; }
+        
+        /* 搜索框与分类 */
+        .search-box { width: 100%; padding: 12px 15px; border: 1px solid #D7CCC8; border-radius: 6px; background: transparent; margin-bottom: 25px; font-size: 0.95rem; outline: none; }
+        .category-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+        .category-item { padding: 8px 14px; background-color: #EFEBE4; border-radius: 20px; font-size: 0.85rem; cursor: pointer; color: #5D4037; transition: all 0.3s; }
+        
+        /* 信息展示区 */
+        .product-info { margin-top: auto; }
+        .product-name { font-family: 'Noto Serif SC', serif; font-size: 1.8rem; margin: 0 0 10px 0; }
+        .product-price { font-size: 1.4rem; color: #8D6E63; font-weight: bold; margin-bottom: 20px; }
+        .product-desc { font-size: 0.95rem; line-height: 1.8; color: #5D4037; margin-bottom: 30px; }
+        .action-btn { width: 100%; padding: 15px; background-color: #3E2723; color: #FFF; border: none; border-radius: 6px; font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        
+        /* 3D 视图区 */
+        .model-viewer-container { flex: 1; position: relative; background-color: #F5F4F0; }
+        model-viewer { width: 100%; height: 100%; outline: none; --poster-color: transparent; }
+        
+        /* 移动端适配 */
+        .mobile-header { display: none; padding: 15px 20px; background-color: #FAF8F5; border-bottom: 1px solid #EBE6DF; align-items: center; justify-content: space-between; }
+        .hamburger { font-size: 1.5rem; background: none; border: none; cursor: pointer; color: #3E2723; }
+        .mobile-info-container { display: none; }
+        
+        @media (max-width: 768px) {
+            .app-container { flex-direction: column; }
+            .mobile-header { display: flex; }
+            .sidebar { position: fixed; left: -100%; top: 0; bottom: 0; width: 80%; max-width: 320px; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
+            .sidebar.open { left: 0; }
+            .model-viewer-container { height: 55vh; flex: none; }
+            .sidebar .product-info { display: none; }
+            .mobile-info-container { display: block; padding: 20px; background: #FAF8F5; flex: 1; overflow-y: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 移动端顶部 -->
+        <div class="mobile-header">
+            <button class="hamburger" onclick="toggleMenu()">☰</button>
+            <div class="brand-title" style="margin-bottom: 0;">南京瑞雨山科技</div>
+            <div style="width: 24px;"></div>
+        </div>
 
-        <main class="flex-1 flex flex-col relative bg-gray-100">
-            <div class="absolute top-4 left-4 flex gap-2 z-10">
-                <button class="bg-white border border-gray-300 text-gray-700 text-xs px-3 py-1 rounded hover:bg-gray-50 transition shadow-sm font-bold">纯色背景</button>
-                <button class="bg-white border border-gray-300 text-gray-700 text-xs px-3 py-1 rounded hover:bg-gray-50 transition shadow-sm">书桌场景</button>
+        <!-- 侧边导航栏 -->
+        <div class="sidebar" id="sidebar">
+            <div class="brand-title">南京瑞雨山科技有限公司</div>
+            <input type="text" class="search-box" placeholder="搜索红木摆件..." />
+            <div class="category-list">
+                <div class="category-item">圆形底座</div>
+                <div class="category-item">圆形几架</div>
+                <div class="category-item">方形底座</div>
+                <div class="category-item">方形几架</div>
             </div>
             
-            <div id="model-container" class="flex-1 m-6 rounded-xl overflow-hidden relative cursor-move border border-gray-300 shadow-inner bg-white">
-                <div id="loading-text" class="absolute inset-0 flex flex-col items-center justify-center z-10 bg-white bg-opacity-90">
-                    <svg class="animate-spin h-10 w-10 mb-4 text-gold" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span id="loading-msg" class="text-sm tracking-widest text-gray-600 font-bold">正在极速调取 3D 藏品档案...</span>
-                </div>
+            <!-- 电脑端信息区 -->
+            <div class="product-info">
+                <h1 class="product-name">加载中...</h1>
+                <div class="product-price">---</div>
+                <p class="product-desc">正在读取云端展厅数据...</p>
+                <button class="action-btn">立即咨询 · 预约选购</button>
             </div>
-        </main>
+        </div>
 
-        <aside class="w-80 bg-panel border-l border-gray-800 flex flex-col shrink-0 overflow-y-auto">
-            <div class="p-6 border-b border-gray-800">
-                <h2 id="detail-title" class="text-2xl font-bold text-white mb-2">加载中...</h2>
-                <div class="flex items-center gap-2 mb-4">
-                    <span id="detail-tag1" class="bg-gray-800 text-xs px-2 py-1 rounded text-gray-300">材质</span>
-                    <span id="detail-tag2" class="bg-gray-800 text-xs px-2 py-1 rounded text-gray-300">工艺</span>
-                </div>
-                <p id="detail-short" class="text-sm text-gray-400 leading-relaxed font-bold mb-2"></p>
-                <p id="detail-desc" class="text-xs text-gray-500 leading-relaxed"></p>
-            </div>
+        <!-- 3D 渲染区 -->
+        <div class="model-viewer-container" onclick="closeMenu()">
+            <model-viewer id="main-viewer" auto-rotate camera-controls shadow-intensity="1.5" exposure="1.1" environment-image="neutral" alt="3D 高端红木展示"></model-viewer>
+        </div>
 
-            <div class="p-6 bg-dark">
-                <h3 class="text-center text-gold font-bold mb-4 text-sm">扫码添加私域，享独家排单</h3>
-                <div class="flex gap-4 justify-center">
-                    <div class="flex flex-col items-center w-1/2">
-                        <img src="https://github.com/user-attachments/assets/b076e097-bbd0-4edd-905c-5cdb6be4a1e2" alt="主理人微信" class="w-full rounded-lg border-2 border-gold shadow-lg mb-2 object-cover aspect-square hover:scale-105 transition-transform">
-                        <span class="text-xs text-gray-300 font-bold mt-1">主理人微信</span>
-                    </div>
-                    <div class="flex flex-col items-center w-1/2">
-                        <img src="https://github.com/user-attachments/assets/05483ed4-8298-41ea-80f0-3d255ebb099d" alt="专属社群" class="w-full rounded-lg border border-gray-600 mb-2 object-cover aspect-square hover:border-gray-400 transition-colors">
-                        <span class="text-xs text-gray-500 mt-1">专属社群</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
+        <!-- 移动端底部信息区 -->
+        <div class="mobile-info-container">
+            <h1 class="product-name">加载中...</h1>
+            <div class="product-price">---</div>
+            <p class="product-desc">正在读取云端展厅数据...</p>
+            <button class="action-btn">立即咨询 · 预约选购</button>
+        </div>
     </div>
 
+    <!-- 动态数据拉取逻辑 -->
     <script>
-        const products = [
-            { 
-                id: 1, 
-                name: "01 紫光檀圆底座", 
-                tag1: "紫光檀", tag2: "整木挖空",
-                short: "密度极高 / 温润如玉", 
-                desc: "极简的圆形设计，底部带有微小的垫足。紫光檀深邃的色泽在光线下呈现出幽黑的光晕，是茶室案头的绝佳点缀。",
-                modelPath: "model_1/model.glb" // 这里指向你的模型文件
-            },
-            { 
-                id: 2, 
-                name: "02 几何矩形瘿木底座", 
-                tag1: "老挝瘿木", tag2: "榫卯拼合",
-                short: "现代设计融合 / 天然树瘤纹", 
-                desc: "不仅有传统的沉稳，更融入了现代的几何线条。中间这块纹理独特的瘿木，如同天然画卷，适合搭配现代简约茶具。",
-                modelPath: "model_2/model.glb" 
-            },
-            { 
-                id: 3, 
-                name: "03 经典方胜纹托盘", 
-                tag1: "大红酸枝", tag2: "透雕工艺",
-                short: "高实用性 / 书房百搭", 
-                desc: "方胜纹代表着同心双合、延绵不断。这款托盘实用性极强，无论是放置茶杯还是文房四宝，都能压住整个桌面的气场。",
-                modelPath: "model_3/model.glb" 
-            }
-        ];
+        function toggleMenu() { document.getElementById('sidebar').classList.toggle('open'); }
+        function closeMenu() { document.getElementById('sidebar').classList.remove('open'); }
 
-        let activeId = 1;
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const folderName = urlParams.get('id');
 
-        function renderList() {
-            const listEl = document.getElementById('item-list');
-            listEl.innerHTML = products.map(p => `
-                <div onclick="selectItem(${p.id})" class="p-3 rounded cursor-pointer transition border ${activeId === p.id ? 'bg-dark border-gold' : 'bg-dark border-gray-800 hover:border-gray-600'}">
-                    <h3 class="${activeId === p.id ? 'text-gold' : 'text-gray-300'} font-bold text-sm">${p.name}</h3>
-                    <p class="text-xs text-gray-500 mt-1">${p.short}</p>
-                </div>
-            `).join('');
-            
-            const activeProduct = products.find(p => p.id === activeId);
-            document.getElementById('detail-title').innerText = activeProduct.name.substring(3);
-            document.getElementById('detail-tag1').innerText = activeProduct.tag1;
-            document.getElementById('detail-tag2').innerText = activeProduct.tag2;
-            document.getElementById('detail-short').innerText = activeProduct.short;
-            document.getElementById('detail-desc').innerText = activeProduct.desc;
-        }
+            const names = document.querySelectorAll('.product-name');
+            const prices = document.querySelectorAll('.product-price');
+            const descs = document.querySelectorAll('.product-desc');
+            const viewer = document.getElementById('main-viewer');
 
-        function selectItem(id) {
-            if (activeId === id) return; 
-            activeId = id;
-            renderList();
-            
-            const activeProduct = products.find(p => p.id === activeId);
-            if (window.switch3DModel) {
-                window.switch3DModel(activeProduct.modelPath);
-            }
-        }
-        
-        renderList();
-    </script>
-
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
-        const container = document.getElementById('model-container');
-        const loadingText = document.getElementById('loading-text');
-        const loadingMsg = document.getElementById('loading-msg');
-
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xf5f5f5); 
-
-        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-        camera.position.set(0, 5, 12); 
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.0;
-        container.appendChild(renderer.domElement);
-
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true; 
-        controls.dampingFactor = 0.05;
-        controls.autoRotate = true; 
-        controls.autoRotateSpeed = 1.2;
-
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2); 
-        scene.add(ambientLight);
-        
-        const mainLight = new THREE.DirectionalLight(0xffffff, 1.5); 
-        mainLight.position.set(10, 20, 10);
-        scene.add(mainLight);
-        
-        const fillLight = new THREE.DirectionalLight(0xffe8c4, 1.0); 
-        fillLight.position.set(-10, 5, -10);
-        scene.add(fillLight);
-
-        // 新增加的底部补光灯，照亮模型底部
-        const bottomLight = new THREE.DirectionalLight(0xffffff, 0.8); 
-        bottomLight.position.set(0, -10, 0); 
-        scene.add(bottomLight);
-
-        let currentModel = null;
-        const gltfLoader = new GLTFLoader(); 
-
-        window.switch3DModel = function(modelPath) {
-            loadingText.style.display = 'flex';
-            loadingMsg.innerText = '正在极速调取 3D 藏品档案...';
-
-            if (currentModel) {
-                scene.remove(currentModel);
-                currentModel.traverse((child) => {
-                    if (child.isMesh) {
-                        child.geometry.dispose();
-                        if (child.material) {
-                            if (Array.isArray(child.material)) {
-                                child.material.forEach(mat => mat.dispose());
-                            } else {
-                                child.material.dispose();
-                            }
-                        }
-                    }
-                });
-                currentModel = null;
-            }
-
-            gltfLoader.load(modelPath, function(gltf) {
-                const object = gltf.scene;
+            if (folderName) {
+                const folderPath = `./products/${folderName}/`;
                 
-                const box = new THREE.Box3().setFromObject(object);
-                const center = box.getCenter(new THREE.Vector3());
-                const size = box.getSize(new THREE.Vector3());
-                const maxDim = Math.max(size.x, size.y, size.z);
-                const scale = 7 / maxDim; 
-                
-                object.scale.set(scale, scale, scale);
-                object.position.sub(center.multiplyScalar(scale)); 
-                object.position.y -= 0.5; 
-
-                currentModel = object; 
-                scene.add(object);
-                loadingText.style.display = 'none'; 
-                
-            }, undefined, function(error) {
-                console.error("加载错误: ", error);
-                loadingMsg.innerHTML = '<span class="text-red-500">档案尚未建立 (模型文件未找到)</span>';
-            });
-        };
-
-        window.addEventListener('resize', () => {
-            if (!container) return;
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
+                fetch(folderPath + 'info.json')
+                    .then(res => {
+                        if(!res.ok) throw new Error();
+                        return res.json();
+                    })
+                    .then(data => {
+                        names.forEach(el => el.innerText = data.name || '未命名产品');
+                        prices.forEach(el => el.innerText = data.price || '价格未定');
+                        descs.forEach(el => el.innerText = data.description || '暂无描述');
+                        viewer.src = folderPath + 'model.glb';
+                    })
+                    .catch(err => {
+                        names.forEach(el => el.innerText = '未找到产品');
+                        descs.forEach(el => el.innerText = '请检查链接是否正确或文件夹内容是否上传。');
+                    });
+            } else {
+                names.forEach(el => el.innerText = '请选择红木展品');
+                prices.forEach(el => el.innerText = '');
+                descs.forEach(el => el.innerText = '您可以通过左侧菜单，或在网址后附带产品 ID 进行沉浸式浏览。');
+            }
         });
-
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update(); 
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.onload = () => {
-            const initialProduct = products.find(p => p.id === activeId);
-            window.switch3DModel(initialProduct.modelPath);
-        };
     </script>
 </body>
 </html>
