@@ -16,16 +16,16 @@
     })();
     </script>
 
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
+    <!-- 【核心修复】替换掉被国内墙掉的 Google 链接，改为 cdnjs 全球加速节点 -->
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap');
         * { box-sizing: border-box; }
         html, body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #F5F4F0; color: #2C1A14; font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; overflow: hidden; }
         
-        /* 整体三栏布局 */
         .app-container { display: flex; width: 100%; height: 100%; }
         
-        /* 左侧：纯净导航栏 (雷打不动) */
         .sidebar-left { width: 280px; background-color: #FAF8F5; border-right: 1px solid #EBE6DF; display: flex; flex-direction: column; z-index: 100; flex-shrink: 0; }
         .brand-header { padding: 30px 25px 20px 25px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #EBE6DF; flex-shrink: 0; }
         .brand-logo { width: 45px; height: 45px; object-fit: contain; border-radius: 5px; }
@@ -35,43 +35,33 @@
         .category-group { margin-bottom: 12px; }
         .category-title { font-weight: bold; color: #5D4037; cursor: pointer; padding: 12px 15px; background-color: #EFEBE4; border-radius: 6px; transition: background-color 0.2s; user-select: none; }
         .category-title:hover, .category-title.active { background-color: #D7CCC8; color: #3E2723; }
-        .product-list { list-style: none; padding: 0; margin: 5px 0 10px 0; display: none; } /* 默认隐藏商品列表 */
+        .product-list { list-style: none; padding: 0; margin: 5px 0 10px 0; display: none; } 
         .product-item { padding: 10px 15px 10px 25px; cursor: pointer; color: #6D4C41; font-size: 0.95rem; border-left: 3px solid transparent; transition: all 0.2s; }
         .product-item:hover, .product-item.selected { color: #D84315; font-weight: bold; border-left: 3px solid #D84315; background-color: #EFEBE4; }
         
-        /* 中间：3D 视图区 */
         .model-viewer-container { flex: 1; position: relative; background-color: #F5F4F0; display: flex; flex-direction: column; }
         model-viewer { width: 100%; height: 100%; outline: none; }
         
-        /* 右侧：产品详细信息面板 */
         .sidebar-right { width: 350px; background-color: #FAF8F5; border-left: 1px solid #EBE6DF; padding: 35px 25px; display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
         .product-name { font-family: 'Noto Serif SC', serif; font-size: 1.5rem; margin: 0 0 15px 0; line-height: 1.4; color: #3E2723; }
         .product-price { font-size: 1.3rem; color: #8D6E63; font-weight: bold; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #D7CCC8; }
         .product-desc { font-size: 0.95rem; line-height: 1.8; color: #4E342E; white-space: pre-wrap; }
         
-        /* 微信客服悬浮窗 (固定在右下角) */
         .wechat-float { position: fixed; bottom: 30px; right: 380px; width: 55px; height: 55px; background: #3E2723; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); color: white; font-size: 1rem; font-weight: bold; letter-spacing: 2px; text-indent: 2px; }
         .wechat-qr { display: none; position: fixed; bottom: 95px; right: 380px; width: 180px; border: 1px solid #EBE6DF; border-radius: 8px; z-index: 1000; background: #FFF; padding: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); text-align: center; }
         .wechat-qr img { width: 100%; height: auto; border-radius: 4px; }
         .wechat-qr p { margin: 8px 0 0 0; font-size: 0.85rem; color: #3E2723; font-weight: bold; }
 
-        /* 移动端 (手机) 适配 */
         .mobile-header { display: none; padding: 15px 20px; background-color: #FAF8F5; border-bottom: 1px solid #EBE6DF; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .hamburger { font-size: 1.5rem; background: none; border: none; cursor: pointer; color: #3E2723; padding: 0; }
         
         @media (max-width: 900px) {
             .app-container { flex-direction: column; overflow-y: auto; }
             .mobile-header { display: flex; }
-            
-            /* 手机上菜单从左边滑出 */
             .sidebar-left { position: fixed; left: -100%; top: 0; bottom: 0; width: 80%; max-width: 300px; box-shadow: 4px 0 15px rgba(0,0,0,0.1); transition: left 0.3s; }
             .sidebar-left.open { left: 0; }
-            
             .model-viewer-container { height: 55vh; flex: none; width: 100%; }
-            
-            /* 手机上文字沉到最底部 */
             .sidebar-right { width: 100%; border-left: none; border-top: 1px solid #EBE6DF; height: auto; overflow: visible; padding: 25px 20px; }
-            
             .wechat-float { right: 20px; bottom: 20px; width: 50px; height: 50px; font-size: 0.9rem; }
             .wechat-qr { right: 20px; bottom: 80px; }
         }
@@ -79,30 +69,24 @@
 </head>
 <body>
     <div class="app-container">
-        <!-- 移动端顶部菜单条 -->
         <div class="mobile-header">
             <button class="hamburger" onclick="toggleMenu()">☰ 分类菜单</button>
             <h2 class="brand-title">雨山红木</h2>
             <div style="width: 24px;"></div>
         </div>
 
-        <!-- 【左栏】：专属菜单导航 -->
         <div class="sidebar-left" id="sidebar-left">
             <div class="brand-header">
                 <img src="./logo.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
                 <h2 class="brand-title">雨山红木</h2>
             </div>
-            
-            <!-- 自动生成的分类列表位置 -->
             <div class="catalog-menu" id="catalog-menu"></div>
         </div>
 
-        <!-- 【中栏】：3D 渲染区 -->
         <div class="model-viewer-container" onclick="closeMenu()">
             <model-viewer id="main-viewer" auto-rotate camera-controls shadow-intensity="1.5" exposure="1.1" environment-image="neutral" alt="3D 高端红木展示"></model-viewer>
         </div>
 
-        <!-- 【右栏】：产品详细信息 -->
         <div class="sidebar-right">
             <h1 class="product-name" id="display-name">欢迎莅临雨山红木</h1>
             <div class="product-price" id="display-price"></div>
@@ -112,7 +96,6 @@
         </div>
     </div>
 
-    <!-- 微信客服悬浮窗 -->
     <div class="wechat-float" onclick="toggleWechat()">微信</div>
     <div class="wechat-qr" id="wechat-qr">
         <img src="./wechat.jpg" alt="客服微信" onerror="this.style.display='none'; this.nextElementSibling.innerText='请先上传 wechat.jpg';">
@@ -120,10 +103,8 @@
     </div>
 
     <script>
-        // ==========================================
         // 【商品配置清单】
-        // ==========================================
-        const CATALOG = [
+        var CATALOG = [
             {
                 categoryFolder: "yuanxing_dizuo", 
                 categoryName: "圆形底座",         
@@ -149,77 +130,94 @@
                 items: []
             }
         ];
-        // ==========================================
 
         function toggleMenu() { document.getElementById('sidebar-left').classList.toggle('open'); }
         function closeMenu() { document.getElementById('sidebar-left').classList.remove('open'); }
         function toggleWechat() { 
-            const qr = document.getElementById('wechat-qr');
+            var qr = document.getElementById('wechat-qr');
             qr.style.display = qr.style.display === 'block' ? 'none' : 'block';
         }
 
-        // 【终极兼容补丁】：双重保险机制，确保无论手机快慢，DOM加载完成后再写入商品
+        // 【兼容性强化】：采用最基础的 ES5 语法，确保所有老旧手机也能完美执行
         function initMenu() {
-            const menuContainer = document.getElementById('catalog-menu');
-            if (!menuContainer || menuContainer.innerHTML.trim() !== '') return; // 防止重复加载
+            var menuContainer = document.getElementById('catalog-menu');
+            if (!menuContainer) return;
+            menuContainer.innerHTML = ''; 
 
-            CATALOG.forEach(category => {
-                const groupDiv = document.createElement('div');
+            for (var i = 0; i < CATALOG.length; i++) {
+                var category = CATALOG[i];
+                var groupDiv = document.createElement('div');
                 groupDiv.className = 'category-group';
                 
-                const titleBtn = document.createElement('div');
+                var titleBtn = document.createElement('div');
                 titleBtn.className = 'category-title';
                 titleBtn.innerText = category.categoryName;
                 
-                const ul = document.createElement('ul');
+                var ul = document.createElement('ul');
                 ul.className = 'product-list';
                 
-                titleBtn.onclick = () => {
-                    const isHidden = (ul.style.display === 'none' || ul.style.display === '');
-                    document.querySelectorAll('.product-list').forEach(list => list.style.display = 'none');
-                    document.querySelectorAll('.category-title').forEach(btn => btn.classList.remove('active'));
-                    
-                    if (isHidden && category.items.length > 0) {
-                        ul.style.display = 'block';
-                        titleBtn.classList.add('active');
-                    }
-                };
+                // 绑定点击事件 (使用闭包防止变量污染)
+                (function(cat, listElement, btnElement) {
+                    btnElement.onclick = function() {
+                        var isHidden = (listElement.style.display === 'none' || listElement.style.display === '');
+                        
+                        var allLists = document.querySelectorAll('.product-list');
+                        for (var j = 0; j < allLists.length; j++) {
+                            allLists[j].style.display = 'none';
+                        }
+                        var allBtns = document.querySelectorAll('.category-title');
+                        for (var k = 0; k < allBtns.length; k++) {
+                            allBtns[k].classList.remove('active');
+                        }
+                        
+                        if (isHidden && cat.items.length > 0) {
+                            listElement.style.display = 'block';
+                            btnElement.classList.add('active');
+                        }
+                    };
+                })(category, ul, titleBtn);
 
-                category.items.forEach(item => {
-                    const li = document.createElement('li');
+                for (var j = 0; j < category.items.length; j++) {
+                    var item = category.items[j];
+                    var li = document.createElement('li');
                     li.className = 'product-item';
                     li.innerText = item.name;
                     
-                    li.onclick = () => {
-                        document.querySelectorAll('.product-item').forEach(el => el.classList.remove('selected'));
-                        li.classList.add('selected');
-                        loadProduct(category.categoryFolder, item.folder);
-                        if(window.innerWidth <= 900) closeMenu(); 
-                    };
+                    (function(catFolder, itemFolder, liElement) {
+                        liElement.onclick = function() {
+                            var allItems = document.querySelectorAll('.product-item');
+                            for (var k = 0; k < allItems.length; k++) {
+                                allItems[k].classList.remove('selected');
+                            }
+                            liElement.classList.add('selected');
+                            
+                            loadProduct(catFolder, itemFolder);
+                            
+                            if(window.innerWidth <= 900) {
+                                closeMenu(); 
+                            }
+                        };
+                    })(category.categoryFolder, item.folder, li);
+
                     ul.appendChild(li);
-                });
+                }
 
                 groupDiv.appendChild(titleBtn);
                 groupDiv.appendChild(ul);
                 menuContainer.appendChild(groupDiv);
-            });
+            }
         }
 
-        // 监听浏览器状态，安全渲染
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initMenu);
-        } else {
-            initMenu();
-        }
+        // 直接暴力初始化，不等待任何外部链接加载
+        initMenu();
 
-        // 加载并渲染右侧数据和中间模型
         function loadProduct(categoryFolder, productFolder) {
-            const folderPath = `./products/${categoryFolder}/${productFolder}/`;
+            var folderPath = './products/' + categoryFolder + '/' + productFolder + '/';
             
-            const nameEl = document.getElementById('display-name');
-            const priceEl = document.getElementById('display-price');
-            const descEl = document.getElementById('display-desc');
-            const viewer = document.getElementById('main-viewer');
+            var nameEl = document.getElementById('display-name');
+            var priceEl = document.getElementById('display-price');
+            var descEl = document.getElementById('display-desc');
+            var viewer = document.getElementById('main-viewer');
 
             nameEl.innerText = "正在加载信息...";
             priceEl.innerText = "";
@@ -229,16 +227,16 @@
             descEl.style.marginTop = "0";
             
             fetch(folderPath + 'info.json')
-                .then(res => {
+                .then(function(res) {
                     if(!res.ok) throw new Error('找不到 info.json 文件');
                     return res.json();
                 })
-                .then(data => {
+                .then(function(data) {
                     nameEl.innerText = data.name || '未命名产品';
                     priceEl.innerText = data.price || '价格未定';
                     descEl.innerText = data.description || '暂无详细描述';
                 })
-                .catch(err => {
+                .catch(function(err) {
                     nameEl.innerText = '暂未填写产品信息';
                     descEl.innerText = '请确认产品文件夹内是否包含正确的 info.json 文件。';
                 });
