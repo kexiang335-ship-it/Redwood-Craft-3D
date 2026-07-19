@@ -16,7 +16,7 @@
     })();
     </script>
 
-    <!-- 【核心修复】替换掉被国内墙掉的 Google 链接，改为 cdnjs 全球加速节点 -->
+    <!-- 国内无障碍加速 3D 渲染组件 -->
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
     
     <style>
@@ -103,7 +103,6 @@
     </div>
 
     <script>
-        // 【商品配置清单】
         var CATALOG = [
             {
                 categoryFolder: "yuanxing_dizuo", 
@@ -121,7 +120,8 @@
                 categoryFolder: "fangxing_dizuo",
                 categoryName: "方形底座",
                 items: [
-                    { folder: "hualimu_huiwen", name: "花梨木回纹正方底座" }
+                    { folder: "hualimu_huiwen", name: "花梨木回纹正方底座" },
+                    { folder: "0522ziguangtan_mingshi", name: "0522紫光檀明式印章底座" }
                 ]
             },
             {
@@ -138,7 +138,6 @@
             qr.style.display = qr.style.display === 'block' ? 'none' : 'block';
         }
 
-        // 【兼容性强化】：采用最基础的 ES5 语法，确保所有老旧手机也能完美执行
         function initMenu() {
             var menuContainer = document.getElementById('catalog-menu');
             if (!menuContainer) return;
@@ -156,7 +155,6 @@
                 var ul = document.createElement('ul');
                 ul.className = 'product-list';
                 
-                // 绑定点击事件 (使用闭包防止变量污染)
                 (function(cat, listElement, btnElement) {
                     btnElement.onclick = function() {
                         var isHidden = (listElement.style.display === 'none' || listElement.style.display === '');
@@ -208,7 +206,6 @@
             }
         }
 
-        // 直接暴力初始化，不等待任何外部链接加载
         initMenu();
 
         function loadProduct(categoryFolder, productFolder) {
