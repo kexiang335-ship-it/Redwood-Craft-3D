@@ -103,6 +103,7 @@
     </div>
 
     <script>
+        // 【商品配置清单】
         var CATALOG = [
             {
                 categoryFolder: "yuanxing_dizuo", 
@@ -114,7 +115,9 @@
             {
                 categoryFolder: "yuanxing_jijia",
                 categoryName: "圆形几架",
-                items: []
+                items: [
+                    { folder: "feisuan_415", name: "雅韵非酸木·典雅花几" }
+                ]
             },
             {
                 categoryFolder: "fangxing_dizuo",
@@ -138,6 +141,7 @@
             qr.style.display = qr.style.display === 'block' ? 'none' : 'block';
         }
 
+        // 基础JavaScript语法，防老旧手机白屏
         function initMenu() {
             var menuContainer = document.getElementById('catalog-menu');
             if (!menuContainer) return;
